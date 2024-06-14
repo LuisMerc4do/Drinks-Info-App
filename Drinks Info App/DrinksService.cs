@@ -27,16 +27,20 @@ namespace Drinks_Info_App
             }
             return categories;
         }
-    }
-    public List<Drink> GetDrinksByCategories(string category)
+    
+    internal List<Drink> GetDrinksByCategory(string category)
     {
-        var client = new RestClient("https://www.thecocktaildb.com/api/json/v1/1/");
+        var client = new RestClient("http://www.thecocktaildb.com/api/json/v1/1/");
         var request = new RestRequest($"filter.php?c={HttpUtility.UrlEncode(category)}");
+
         var response = client.ExecuteAsync(request);
+
         List<Drink> drinks = new();
+
         if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
         {
             string rawResponse = response.Result.Content;
+
             var serialize = JsonConvert.DeserializeObject<Drinks>(rawResponse);
 
             drinks = serialize.DrinksList;
@@ -44,8 +48,32 @@ namespace Drinks_Info_App
             TableVisualisationEngine.ShowTable(drinks, "Drinks Menu");
 
             return drinks;
+
         }
+
         return drinks;
+        }
+    internal void GetDrink(string drink)
+        {
+            var client = new RestClient("http://www.thecocktaildb.com/api/json/v1/1/");
+            var request = new RestRequest($"filter.php?c={HttpUtility.UrlEncode(category)}");
+            var response = client.ExecuteAsync(request);
+            List<DrinkDetail> drinkDetail = new();
+
+            if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                string rawResponse = response.Result.Content;
+
+                var serialize = JsonConvert.DeserializeObject<Drinks>(rawResponse);
+
+                drinks = serialize.DrinksList;
+
+                TableVisualisationEngine.ShowTable(drinks, "Drinks Menu");
+
+                return drinks;
+
+            }
+        }
     }
 
 }
